@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConstructPro - Project Management Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: #fbbf24;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #f8fafc;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .task-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .task-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .task-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .task-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .progress-section {
+            margin-bottom: 1rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .progress-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-input {
+            width: 80px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), #3b82f6);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .task-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success-color);
+        }
+
+        .notification.error {
+            background: var(--danger-color);
+        }
+
+        .notification.info {
+            background: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-bar {
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .task-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-hard-hat logo-icon"></i>
+                <h1>ConstructPro</h1>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalTasks">0</span>
+                    <span class="stat-label">Total Tasks</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="completedTasks">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="avgProgress">0%</span>
+                    <span class="stat-label">Avg Progress</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-plus-circle"></i>
+                        Add New Task
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form id="addTaskForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="name">
+                                    <i class="fas fa-tasks"></i> Task Name
+                                </label>
+                                <input type="text" id="name" class="form-input" required placeholder="Enter task name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="assigned_to">
+                                    <i class="fas fa-user"></i> Assigned To
+                                </label>
+                                <input type="text" id="assigned_to" class="form-input" required placeholder="Team member name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="deadline">
+                                    <i class="fas fa-calendar"></i> Deadline
+                                </label>
+                                <input type="date" id="deadline" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="priority">
+                                    <i class="fas fa-flag"></i> Priority
+                                </label>
+                                <select id="priority" class="form-select" required>
+                                    <option value="">Select priority level</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add Task
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search tasks by name or assignee...">
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-list-check"></i>
+                    Project Tasks
+                </h2>
+            </div>
+            <div class="card-body">
+                <div id="taskList" class="task-grid">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <div>Loading tasks...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'construct-pro-backend-git-master-akindats1s-projects.vercel.app';
+        let currentTasks = [];
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function updateStats() {
+            const total = currentTasks.length;
+            const completed = currentTasks.filter(task => task.progress === 100).length;
+            const avgProgress = total > 0 ? Math.round(currentTasks.reduce((sum, task) => sum + task.progress, 0) / total) : 0;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('avgProgress').textContent = `${avgProgress}%`;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return null;
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        function isOverdue(deadline) {
+            if (!deadline) return false;
+            return new Date(deadline) < new Date();
+        }
+
+        function renderTasks(tasks) {
+            const taskList = document.getElementById('taskList');
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No tasks found</h3>
+                        <p>Add your first task to get started with project tracking.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            taskList.innerHTML = tasks.map(task => `
+                <div class="task-card">
+                    <div class="task-header">
+                        <h3 class="task-title">${task.name}</h3>
+                        <span class="priority-badge priority-${task.priority.toLowerCase()}">${task.priority}</span>
+                    </div>
+                    
+                    <div class="task-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>${task.assigned_to}</span>
+                        </div>
+                        ${task.deadline ? `
+                            <div class="meta-item ${isOverdue(task.deadline) && task.progress < 100 ? 'text-danger' : ''}">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>${formatDate(task.deadline)} ${isOverdue(task.deadline) && task.progress < 100 ? '(Overdue)' : ''}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="progress-label">Progress</span>
+                            <span class="progress-value">${task.progress}%</span>
+                        </div>
+                        <div class="progress-container">
+                            <input type="number" min="0" max="100" value="${task.progress}" 
+                                   data-id="${task.id}" class="progress-input">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${task.progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="task-actions">
+                        <button class="btn btn-danger delete-btn" data-id="${task.id}">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Attach event listeners
+            document.querySelectorAll('.progress-input').forEach(input => {
+                input.addEventListener('change', handleProgressUpdate);
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', handleDelete);
+            });
+
+            updateStats();
+        }
+
+        async function handleProgressUpdate(e) {
+            const id = e.target.dataset.id;
+            const progress = parseInt(e.target.value);
+            
+            if (progress < 0 || progress > 100) {
+                showNotification('Progress must be between 0 and 100', 'error');
+                e.target.value = currentTasks.find(t => t.id == id).progress;
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ progress })
+                });
+                
+                if (!response.ok) throw new Error('Failed to update progress');
+                
+                showNotification(`Progress updated to ${progress}%`, 'success');
+                await fetchTasks();
+            } catch (error) {
+                showNotification(error.message, 'error');
+                e.target.value = currentTasks.find(t => t.id == id).progress;
+            }
+        }
+
+        async function handleDelete(e) {
+            const taskName = e.target.closest('.task-card').querySelector('.task-title').textContent;
+            
+            if (!confirm(`Are you sure you want to delete "${taskName}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/${e.target.dataset.id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) throw new Error('Failed to delete task');
+                
+                showNotification('Task deleted successfully', 'success');
+                await fetchTasks();
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        }
+
+        async function fetchTasks() {
+            try {
+                document.getElementById('taskList').innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <div>Loading tasks...</div>
+                    </div>
+                `;
+                
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to load tasks');
+                
+                currentTasks = await response.json();
+                renderTasks(currentTasks);
+            } catch (error) {
+                showNotification('Failed to load tasks. Please check your connection.', 'error');
+                document.getElementById('taskList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error loading tasks</h3>
+                        <p>Please check your connection and try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            const filtered = currentTasks.filter(task => 
+                task.name.toLowerCase().includes(term) ||
+                task.assigned_to.toLowerCase().includes(term)
+            );
+            renderTasks(filtered);
+        });
+
+        // Form submission
+        document.getElementById('addTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                assigned_to: document.getElementById('assigned_to').value.trim(),
+                deadline: document.getElementById('deadline').value || null,
+                priority: document.getElementById('priority').value
+            };
+
+            // Validation
+            if (formData.name.length < 3) {
+                showNotification('Task name must be at least 3 characters long', 'error');
+                return;
+            }
+
+            if (formData.assigned_to.length < 2) {
+                showNotification('Assignee name must be at least 2 characters long', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Failed to add task');
+                
+                showNotification('Task added successfully!', 'success');
+                document.getElementById('addTaskForm').reset();
+                await fetchTasks();
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+
+        // Set minimum date to today
+        document.getElementById('deadline').min = new Date().toISOString().split('T')[0];
+
+        // Initialize
+        fetchTasks();
+    </script>
+</body>
+</html>
